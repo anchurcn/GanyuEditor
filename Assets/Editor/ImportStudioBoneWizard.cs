@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
+using GanyuEditor.Extensions;
 using static GoldsrcPhysics.Goldsrc.Studio_h;
 
 
@@ -109,54 +110,7 @@ namespace GanyuEditor
             m.m23 = translation.z;
         }
 
-        private void CreateSkeleton(studiohdr_t* pStudioModel)
-        {
-            _tempObject = new GameObject("empty temp");
-            GameObject[] gameObjects = new GameObject[128];
-            mstudiobone_t* studioBones = (mstudiobone_t*)((byte*)pStudioModel + pStudioModel->boneindex);
-            for (int i = 0; i < pStudioModel->numbones; i++)
-            {
-                if (i == 0)
-                {
-                    string name = Marshal.PtrToStringAnsi((System.IntPtr)studioBones[i].name);
-                    var gameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    gameObject.name = name;
-                    gameObject.transform.parent = ModelRoot.transform;
-                    gameObjects[i] = gameObject;
-                    var bone = gameObject.AddComponent<StudioBone>();
-                    bone.Index = i;
-                    var bonevalue = studioBones[i].value;
 
-                    Matrix4x4 boneMatrix = GetGoldsrcBoneLocalMatrix(bonevalue);
-
-                    var boneWorldTransform = GConstant.RebaseMatrix * boneMatrix;
-
-                    //bone.WorldTransform = boneWorldTransform;
-                    gameObject.transform.position = GetTranslation(boneWorldTransform);
-
-                }
-                else
-                {
-                    string name = Marshal.PtrToStringAnsi((System.IntPtr)studioBones[i].name);
-                    var gameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    gameObject.name = name;
-                    gameObject.transform.parent = gameObjects[studioBones[i].parent].transform;
-                    gameObjects[i] = gameObject;
-                    var bone = gameObject.AddComponent<StudioBone>();
-                    bone.Index = i;
-                    var parentBone = gameObjects[studioBones[i].parent].GetComponent<StudioBone>();
-                    var bonevalue = studioBones[i].value;
-
-                    Matrix4x4 boneMatrix = GetGoldsrcBoneLocalMatrix(bonevalue);
-
-                    //var boneWorldTransform = parentBone.WorldTransformMatrix * boneMatrix;
-
-                    //bone.WorldTransformMatrix = boneWorldTransform;
-
-                    //MyUtil.SetTransformFromMatrix(gameObject.transform, ref boneWorldTransform);
-                }
-            }
-        }
         Matrix4x4[] _boneTransform = new Matrix4x4[128];
         void FillBoneTransform(studiohdr_t* phdr)
         {
@@ -241,9 +195,6 @@ namespace GanyuEditor
                 Debug.Assert(local1.Equal(local2));
                 Debug.Assert(local2.Equal(local3));
                 Debug.Assert(local1.Equal(local3));
-                Debug.Log(local1);
-                Debug.Log(local2);
-                Debug.Log(local3);
             }
         }
         bool MatrixEqual(in Matrix4x4 lhs, in Matrix4x4 rhs)
@@ -260,62 +211,7 @@ namespace GanyuEditor
 
         }
         static GameObject _tempObject;
-        private void CreateSkeleton2(studiohdr_t* pStudioModel)
-        {
-            GameObject[] gameObjects = new GameObject[128];
-            mstudiobone_t* studioBones = (mstudiobone_t*)((byte*)pStudioModel + pStudioModel->boneindex);
-            for (int i = 0; i < pStudioModel->numbones; i++)
-            {
-                if (i == 0)
-                {
-                    string name = Marshal.PtrToStringAnsi((System.IntPtr)studioBones[i].name);
-                    var gameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    gameObject.name = name;
-                    gameObject.transform.parent = ModelRoot.transform;
-                    gameObjects[i] = gameObject;
-                    var bone = gameObject.AddComponent<StudioBone>();
-                    bone.Index = i;
-                    var bonevalue = studioBones[i].value;
 
-                    Matrix4x4 boneMatrix = GetGoldsrcBoneLocalMatrix(bonevalue);
-
-                    var boneWorldTransform = GConstant.RebaseMatrix * boneMatrix;
-
-                    var translation = GetTranslation(boneWorldTransform);
-                    SetTranslation(ref boneWorldTransform, new Vector3(0, 0, 0));
-                    boneWorldTransform = GConstant.RebaseMatrix * boneWorldTransform;
-                    SetTranslation(ref boneWorldTransform, translation);
-
-                    MyUtil.SetTransformFromMatrix(gameObject.transform, ref boneWorldTransform);
-
-                }
-                else
-                {
-                    string name = Marshal.PtrToStringAnsi((System.IntPtr)studioBones[i].name);
-                    var gameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    gameObject.name = name;
-                    gameObject.transform.parent = gameObjects[studioBones[i].parent].transform;
-                    gameObjects[i] = gameObject;
-                    var bone = gameObject.AddComponent<StudioBone>();
-                    bone.Index = i;
-                    var parentBone = gameObjects[studioBones[i].parent].GetComponent<StudioBone>();
-                    var bonevalue = studioBones[i].value;
-
-                    Matrix4x4 boneMatrix = GetGoldsrcBoneLocalMatrix(bonevalue);
-
-                    var localToWorld = gameObjects[studioBones[i].parent].transform.localToWorldMatrix;
-
-                    var translation = GetTranslation(localToWorld);
-                    SetTranslation(ref localToWorld, new Vector3(0, 0, 0));
-                    localToWorld = GConstant.RebaseMatrix * localToWorld;
-                    SetTranslation(ref localToWorld, translation);
-
-                    var boneWorldTransform = localToWorld * boneMatrix;
-
-                    MyUtil.SetTransformFromMatrix(gameObject.transform, ref boneWorldTransform);
-                }
-            }
-        }
 
         private bool Validation(studiohdr_t* pStudioModel)
         {

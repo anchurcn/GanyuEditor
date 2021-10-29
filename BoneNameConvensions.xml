@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<ArrayOfBoneNameConvension xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <BoneNameConvension>
-    <Name>ganyu</Name>
+<ArrayOfBoneNameConvention xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <BoneNameConvention>
+    <Name>Ganyu</Name>
     <Pelvis>Bip01 Pelvis</Pelvis>
     <Spine>Bip01 Spine1</Spine>
     <Chest>Bip01 Spine3</Chest>
@@ -18,24 +18,5 @@
     <RightHip>Bip01 R Leg</RightHip>
     <RightKnee>Bip01 R Leg1</RightKnee>
     <RightFoot>Bip01 R Foot</RightFoot>
-  </BoneNameConvension>
-  <BoneNameConvension>
-    <Name>HDBarney</Name>
-    <Pelvis>Bip01 Pelvis</Pelvis>
-    <Spine>Bip01 Spine</Spine>
-    <Chest>Bip01 Spine1</Chest>
-    <Head>Bip01 Head</Head>
-    <LeftArm>Bip01 L UpperArm</LeftArm>
-    <LeftElbow>Bip01 L Forearm</LeftElbow>
-    <LeftHand>Bip01 L Hand</LeftHand>
-    <RightArm>Bip01 R UpperArm</RightArm>
-    <RightElbow>Bip01 R Forearm</RightElbow>
-    <RightHand>Bip01 R Hand</RightHand>
-    <LeftHip>Bip01 L Thigh</LeftHip>
-    <LeftKnee>Bip01 L Calf</LeftKnee>
-    <LeftFoot>Bip01 L Foot</LeftFoot>
-    <RightHip>Bip01 R Thigh</RightHip>
-    <RightKnee>Bip01 R Calf</RightKnee>
-    <RightFoot>Bip01 R Foot</RightFoot>
-  </BoneNameConvension>
-</ArrayOfBoneNameConvension>
+  </BoneNameConvention>
+</ArrayOfBoneNameConvention>

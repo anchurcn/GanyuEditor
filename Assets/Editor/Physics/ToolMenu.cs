@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
-
+using System.IO;
 
 namespace GanyuEditor.Physics
 {
@@ -27,6 +27,8 @@ namespace GanyuEditor.Physics
                 modelRoot.GetComponent<ModelInfo>() is var modelInfo &&
                 !ReferenceEquals(modelInfo, null))
             {
+                if (File.Exists(modelInfo.OutputPath) && !EditorUtility.DisplayDialog("Info", $"是否覆盖已存在文件 {modelInfo.OutputPath}?", "是", "否"))
+                    return;
                 PhysicsDataExporter exporter = new PhysicsDataExporter()
                 {
                     ModelRoot = modelRoot,
