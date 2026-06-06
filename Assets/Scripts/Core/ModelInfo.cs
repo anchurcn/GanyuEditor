@@ -1,34 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.IO;
 using UnityEngine;
-
 
 namespace GanyuEditor
 {
     public class ModelInfo : MonoBehaviour
     {
-
         public string ModelPath;
         public string Checksum;
-        public string ModelName
-        {
-            get
-            {
-                var arr = ModelPath.Split('\\');
-                var fileName = arr[arr.Length - 1];
-                return fileName.Substring(0, fileName.Length - 4);
-            }
-        }
-        public string OutputPath
-        {
-            get
-            {
-                var arr = ModelPath.Split('.');
-                arr[arr.Length - 1] = "gpd";
-                return string.Join(".", arr);
-            }
-        }
 
+        public string ModelName =>
+            string.IsNullOrEmpty(ModelPath) ? string.Empty : Path.GetFileNameWithoutExtension(ModelPath);
+
+        public string OutputPath =>
+            string.IsNullOrEmpty(ModelPath) ? string.Empty : Path.ChangeExtension(ModelPath, "gpd");
     }
 }
-
