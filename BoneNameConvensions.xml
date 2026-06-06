@@ -19,4 +19,23 @@
     <RightKnee>Bip01 R Leg1</RightKnee>
     <RightFoot>Bip01 R Foot</RightFoot>
   </BoneNameConvention>
+  <BoneNameConvention>
+    <Name>barney</Name>
+    <Pelvis>Bip01 Pelvis</Pelvis>
+    <Spine>Bip01 Spine</Spine>
+    <Chest>Bip01 Spine1</Chest>
+    <Head>Bip01 Head</Head>
+    <LeftArm>Bip01 L UpperArm</LeftArm>
+    <LeftElbow>Bip01 L Forearm</LeftElbow>
+    <LeftHand>Bip01 L Hand</LeftHand>
+    <RightArm>Bip01 R UpperArm</RightArm>
+    <RightElbow>Bip01 R Forearm</RightElbow>
+    <RightHand>Bip01 R Hand</RightHand>
+    <LeftHip>Bip01 L Thigh</LeftHip>
+    <LeftKnee>Bip01 L Calf</LeftKnee>
+    <LeftFoot>Bip01 L Foot</LeftFoot>
+    <RightHip>Bip01 R Thigh</RightHip>
+    <RightKnee>Bip01 R Calf</RightKnee>
+    <RightFoot>Bip01 R Foot</RightFoot>
+  </BoneNameConvention>
 </ArrayOfBoneNameConvention>
