@@ -3,7 +3,7 @@
 
 namespace GanyuEditor.Physics
 {
-    public class HingeConstraint : Constraint
+    public class HingeConstraint : PhysicsConstraint
     {
         public bool ShowLimitHandles;
         public bool ShowRotationHandle;

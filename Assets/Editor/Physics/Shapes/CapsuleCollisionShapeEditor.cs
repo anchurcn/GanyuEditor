@@ -5,14 +5,14 @@ using UnityEditor.IMGUI.Controls;
 
 namespace GanyuEditor.Physics
 {
-    [CustomEditor(typeof(BoxShape)), CanEditMultipleObjects]
-    public class BoxShapeEditor : UnityEditor.Editor
+    [CustomEditor(typeof(CapsuleCollisionShape)), CanEditMultipleObjects]
+    public class CapsuleCollisionShapeEditor : UnityEditor.Editor
     {
-        private BoxBoundsHandle _handle = new BoxBoundsHandle() { axes = PrimitiveBoundsHandle.Axes.All };
+        private CapsuleBoundsHandle _handle = new CapsuleBoundsHandle() { axes = PrimitiveBoundsHandle.Axes.All, heightAxis = CapsuleBoundsHandle.HeightAxis.X };
 
         private void OnSceneGUI()
         {
-            var component = target as BoxShape;
+            var component = target as CapsuleCollisionShape;
 
             //if (component.ShowBoundsHandle || component.ShowRotationHandle)
             //{
@@ -31,14 +31,16 @@ namespace GanyuEditor.Physics
             {
                 using (new Handles.DrawingScope(trans))
                 {
-                    _handle.size = component.HalfExtent * 2;
+                    _handle.radius = component.Radius;
+                    _handle.height = component.Height;
                     _handle.center = component.LocalCenter;
                     EditorGUI.BeginChangeCheck();
                     _handle.DrawHandle();
                     if (EditorGUI.EndChangeCheck())
                     {
-                        Undo.RecordObject(component, $"Edit BoxShape [{component.name}] bounds");
-                        component.HalfExtent = _handle.size / 2;
+                        Undo.RecordObject(component, $"Edit CapsuleCollisionShape [{component.name}] bounds");
+                        component.Radius = _handle.radius;
+                        component.Height = _handle.height;
                         component.LocalCenter = _handle.center;
                     }
                 }
@@ -50,7 +52,7 @@ namespace GanyuEditor.Physics
                 Quaternion rot = Handles.RotationHandle(component.Rotation, component.transform.position);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    Undo.RecordObject(component, $"Rotate BoxShape [{component.name}]");
+                    Undo.RecordObject(component, $"Rotate CapsuleCollisionShape [{component.name}]");
                     component.Rotation = rot;
                 }
             }

@@ -37,7 +37,7 @@ namespace GanyuEditor.Physics
         {
             get
             {
-                var rigid = GetComponent<Rigidbody>();
+                var rigid = GetComponent<PhysicsBody>();
                 if (rigid && rigid.IsAttachment)
                     return Color.blue;
                 else

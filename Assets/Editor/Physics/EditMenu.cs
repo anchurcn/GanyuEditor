@@ -14,13 +14,13 @@ namespace GanyuEditor.Physics
 
         #region Hinge Auto Parenting
 
-        static GanyuEditor.Physics.Rigidbody FindParentRigidbody(GanyuEditor.Physics.Rigidbody rigidbody)
+        static GanyuEditor.Physics.PhysicsBody FindParentRigidbody(GanyuEditor.Physics.PhysicsBody rigidbody)
         {
             var obj = rigidbody.gameObject;
             while (obj.transform.parent)
             {
                 obj = obj.transform.parent.gameObject;
-                rigidbody = obj.GetComponent<GanyuEditor.Physics.Rigidbody>();
+                rigidbody = obj.GetComponent<GanyuEditor.Physics.PhysicsBody>();
                 if (rigidbody)
                     return rigidbody;
             }
@@ -33,7 +33,7 @@ namespace GanyuEditor.Physics
             if (studioBoneObject != null && studioBoneObject.GetComponent<StudioBone>() != null)
             {
                 var hinge = studioBoneObject.AddComponent<HingeConstraint>();
-                var rigidbody = studioBoneObject.GetComponent<GanyuEditor.Physics.Rigidbody>();
+                var rigidbody = studioBoneObject.GetComponent<GanyuEditor.Physics.PhysicsBody>();
                 hinge.ConnectedBody = FindParentRigidbody(rigidbody);
             }
         }
@@ -55,7 +55,7 @@ namespace GanyuEditor.Physics
             if (studioBoneObject != null && studioBoneObject.GetComponent<StudioBone>() != null)
             {
                 var hinge = studioBoneObject.AddComponent<ConeTwistConstraint>();
-                var rigidbody = studioBoneObject.GetComponent<GanyuEditor.Physics.Rigidbody>();
+                var rigidbody = studioBoneObject.GetComponent<GanyuEditor.Physics.PhysicsBody>();
                 hinge.ConnectedBody = FindParentRigidbody(rigidbody);
             }
         }

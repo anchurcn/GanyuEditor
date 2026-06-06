@@ -3,7 +3,7 @@
 
 namespace GanyuEditor.Physics
 {
-    public class SphericalConstraint : Constraint
+    public class SphericalConstraint : PhysicsConstraint
     {
 
     }

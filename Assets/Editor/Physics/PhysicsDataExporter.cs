@@ -52,7 +52,7 @@ namespace GanyuEditor.Physics
 
                 foreach (var i in ModelRoot.GetComponentsInChildren<Transform>())
                 {
-                    if(i.GetComponent<GanyuEditor.Physics.Rigidbody>())
+                    if(i.GetComponent<GanyuEditor.Physics.PhysicsBody>())
                     {
                         ProcessPhysicalBone(i.gameObject);
                     }
@@ -109,7 +109,7 @@ namespace GanyuEditor.Physics
             }
 
             // append rigidbody
-            var rigidCompo = boneObject.GetComponent<GanyuEditor.Physics.Rigidbody>();
+            var rigidCompo = boneObject.GetComponent<GanyuEditor.Physics.PhysicsBody>();
             var rigidElement = _doc.CreateElement("rigidbody");
             _rigidBlock.AppendChild(rigidElement);
 
@@ -124,7 +124,7 @@ namespace GanyuEditor.Physics
             // append constraint
             // rigidbody b is the connected body
             // sometimes body a connect to the world. (no body b)
-            var constCompo = boneObject.GetComponent<Constraint>();
+            var constCompo = boneObject.GetComponent<PhysicsConstraint>();
             if(constCompo)
             {
                 var constElement = _doc.CreateElement("constraint");
@@ -187,15 +187,15 @@ namespace GanyuEditor.Physics
         {
             var result = _doc.CreateElement("sub-collision-shape");
 
-            if(collisionShape is BoxShape)
+            if(collisionShape is BoxCollisionShape)
             {
-                var box = collisionShape as BoxShape;
+                var box = collisionShape as BoxCollisionShape;
                 result.SetAttribute("type", "primitive.box");
                 result.AppendField("halfextent", new Vector3(box.HalfExtent.x, box.HalfExtent.z, box.HalfExtent.y));
             }
-            else if(collisionShape is CapsuleShape)
+            else if(collisionShape is CapsuleCollisionShape)
             {
-                var capsule = collisionShape as CapsuleShape;
+                var capsule = collisionShape as CapsuleCollisionShape;
                 result.SetAttribute("type", "primitive.capsule");
                 result.AppendField("radius", capsule.Radius);
                 result.AppendField("height", capsule.Height);

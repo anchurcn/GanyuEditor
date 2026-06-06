@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace GanyuEditor.Physics
 {
-    [RequireComponent(typeof(Rigidbody))]
-    public abstract class Constraint : MonoBehaviour
+    [RequireComponent(typeof(PhysicsBody))]
+    public abstract class PhysicsConstraint : MonoBehaviour
     {
         // 约束共享骨骼的位置，但有自己的旋转。
         public Vector3 Position => transform.position;
         public Quaternion Rotation = Quaternion.identity;
 
-        public Rigidbody ConnectedBody;
+        public PhysicsBody ConnectedBody;
 
         public Matrix4x4 WorldTransform
         {
