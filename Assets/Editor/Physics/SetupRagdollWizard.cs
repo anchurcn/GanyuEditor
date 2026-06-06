@@ -5,35 +5,10 @@ using System.Xml.Serialization;
 using UnityEngine;
 using UnityEditor;
 using GanyuEditor.Extensions;
+using GanyuEditor.Editor.Physics.Wizards;
 
 namespace GanyuEditor.Physics
 {
-    internal static class Helper
-    {
-        public static Vector3 Pos(this StudioBone self) => self.transform.position;
-        public static Matrix4x4 Trans(this StudioBone self) => self.transform.localToWorldMatrix;
-        /// <summary>
-        /// Find the root gameobject of given object on the scene hierarchy.
-        /// </summary>
-        /// <param name="self"></param>
-        /// <returns></returns>
-        public static GameObject RootObject(this GameObject self)
-        {
-            while (self.transform.parent)
-            {
-                self = self.transform.parent.gameObject;
-            }
-            return self;
-        }
-        public static void AddShape(this StudioBone self, Matrix4x4 shapeTrans, float height, float radius)
-        {
-            var shape = self.gameObject.AddComponent<CapsuleCollisionShape>();
-            self.gameObject.AddComponent<GanyuEditor.Physics.PhysicsBody>();
-            shape.WorldTransform = shapeTrans;
-            shape.Height = height;
-            shape.Radius = radius;
-        }
-    }
     // Bipped ragdoll
     public class SetupRagdollWizard : ScriptableWizard
     {
