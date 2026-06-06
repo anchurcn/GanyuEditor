@@ -4,11 +4,36 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using UnityEngine;
 using UnityEditor;
+using GanyuEditor;
 using GanyuEditor.Extensions;
-using GanyuEditor.Editor.Physics.Wizards;
+using GanyuEditor.Physics;
 
-namespace GanyuEditor.Physics
+namespace GanyuEditor.Editor.Physics.Wizards
 {
+    internal static class Helper
+    {
+        public static Vector3 Pos(this StudioBone self) => self.transform.position;
+        public static Matrix4x4 Trans(this StudioBone self) => self.transform.localToWorldMatrix;
+
+        public static GameObject RootObject(this GameObject self)
+        {
+            while (self.transform.parent)
+            {
+                self = self.transform.parent.gameObject;
+            }
+            return self;
+        }
+
+        public static void AddShape(this StudioBone self, Matrix4x4 shapeTrans, float height, float radius)
+        {
+            var shape = self.gameObject.AddComponent<CapsuleCollisionShape>();
+            self.gameObject.AddComponent<PhysicsBody>();
+            shape.WorldTransform = shapeTrans;
+            shape.Height = height;
+            shape.Radius = radius;
+        }
+    }
+
     // Bipped ragdoll
     public class SetupRagdollWizard : ScriptableWizard
     {
@@ -273,36 +298,36 @@ namespace GanyuEditor.Physics
             var bodyWidth = (lArmPos - rArmPos).magnitude;
             // head
             var headPos = Head.Pos();
-            var headWidth = bodyWidth / 2.5f;//躯干是头的2.5倍
-            var headRaito = 5.85f / 8.1f;//头宽高比
+            var headWidth = bodyWidth / RagdollConstants.BodyToHeadWidthRatio;
+            var headRaito = RagdollConstants.HeadAspectRatio;
             var headHeight = headWidth / headRaito;
             var headShapeTrans = Matrix4x4.Translate(headPos + new Vector3(0, headHeight / 2, 0)).Lookat(headPos, Vector3.right);
             Head.AddShape(headShapeTrans, headHeight, headWidth / 2);
             // up limbs
-            CreateLimb(LeftArm, LeftElbow.Pos(), headWidth * 0.55f);
-            CreateLimb(LeftElbow, LeftHand.Pos(), headWidth * 0.5f);
-            CreateLimb(RightArm, RightElbow.Pos(), headWidth * 0.55f);
-            CreateLimb(RightElbow, RightHand.Pos(), headWidth * 0.5f);
+            CreateLimb(LeftArm, LeftElbow.Pos(), headWidth * RagdollConstants.UpperArmWidthRatio);
+            CreateLimb(LeftElbow, LeftHand.Pos(), headWidth * RagdollConstants.LowerArmWidthRatio);
+            CreateLimb(RightArm, RightElbow.Pos(), headWidth * RagdollConstants.UpperArmWidthRatio);
+            CreateLimb(RightElbow, RightHand.Pos(), headWidth * RagdollConstants.LowerArmWidthRatio);
             // low limbs
-            CreateLimb(LeftHip, LeftKnee.Pos(), headWidth * 0.55f);
-            CreateLimb(LeftKnee, LeftFoot.Pos(), headWidth * 0.5f);
-            CreateLimb(RightHip, RightKnee.Pos(), headWidth * 0.55f);
-            CreateLimb(RightKnee, RightFoot.Pos(), headWidth * 0.5f);
+            CreateLimb(LeftHip, LeftKnee.Pos(), headWidth * RagdollConstants.UpperLegWidthRatio);
+            CreateLimb(LeftKnee, LeftFoot.Pos(), headWidth * RagdollConstants.LowerLegWidthRatio);
+            CreateLimb(RightHip, RightKnee.Pos(), headWidth * RagdollConstants.UpperLegWidthRatio);
+            CreateLimb(RightKnee, RightFoot.Pos(), headWidth * RagdollConstants.LowerLegWidthRatio);
             // pelvis
             var pelvisTrans = Pelvis.Trans().Lookat(Pelvis.Pos() + new Vector3(1, 0, 0), Vector3.right);
-            Pelvis.AddShape(pelvisTrans, bodyWidth, (Spine.Pos() - Pelvis.Pos()).magnitude * 1.1f);
+            Pelvis.AddShape(pelvisTrans, bodyWidth, (Spine.Pos() - Pelvis.Pos()).magnitude * RagdollConstants.PelvisHeightRatio);
             // spine
             var spineTrans = Matrix4x4.Translate((Chest.Pos() + Spine.Pos()) / 2);
             var spineShape = Spine.gameObject.AddComponent<BoxCollisionShape>();
             spineShape.WorldTransform = spineTrans;
-            spineShape.HalfExtent = new Vector3(bodyWidth / 2, (Chest.Pos() - Spine.Pos()).magnitude / 2, headWidth * 0.7f);
+            spineShape.HalfExtent = new Vector3(bodyWidth / 2, (Chest.Pos() - Spine.Pos()).magnitude / 2, headWidth * RagdollConstants.SpineDepthRatio);
             Spine.gameObject.AddComponent<GanyuEditor.Physics.PhysicsBody>();
             // chest
             Vector3 neckPos = (new Vector3(Head.Pos().x, LeftArm.Pos().y, Head.Pos().z) + headPos) / 2;
             var chestTrans = Matrix4x4.Translate((neckPos + Chest.Pos()) / 2);
             var chestShape = Chest.gameObject.AddComponent<BoxCollisionShape>();
             chestShape.WorldTransform = chestTrans;
-            chestShape.HalfExtent = new Vector3(bodyWidth / 2, (neckPos - Chest.Pos()).magnitude / 2, headWidth * 0.7f);
+            chestShape.HalfExtent = new Vector3(bodyWidth / 2, (neckPos - Chest.Pos()).magnitude / 2, headWidth * RagdollConstants.ChestDepthRatio);
             Chest.gameObject.AddComponent<GanyuEditor.Physics.PhysicsBody>();
         }
         private void BuildConstraints()
@@ -311,33 +336,33 @@ namespace GanyuEditor.Physics
             var cone = AddConeTwist(Spine, Pelvis);
             var rot = Matrix4x4.Translate(Spine.Pos()).Lookat(Chest.Pos(), Vector3.right).rotation;
             cone.Rotation = rot;
-            cone.TwistSpan = 20;
-            cone.SwingSpan1 = 35;
-            cone.SwingSpan2 = 10;
+            cone.TwistSpan = RagdollConstants.ConstraintLimits.SpineTwistSpan;
+            cone.SwingSpan1 = RagdollConstants.ConstraintLimits.SpineSwingSpan1;
+            cone.SwingSpan2 = RagdollConstants.ConstraintLimits.SpineSwingSpan2;
 
             //AddConstraint(Chest, Spine);
             cone = AddConeTwist(Chest, Spine);
             rot = Matrix4x4.Translate(Chest.Pos()).Lookat(Head.Pos(), Vector3.right).rotation;
             cone.Rotation = rot;
-            cone.TwistSpan = 25;
-            cone.SwingSpan1 = 15;
-            cone.SwingSpan2 = 5;
+            cone.TwistSpan = RagdollConstants.ConstraintLimits.ChestTwistSpan;
+            cone.SwingSpan1 = RagdollConstants.ConstraintLimits.ChestSwingSpan1;
+            cone.SwingSpan2 = RagdollConstants.ConstraintLimits.ChestSwingSpan2;
 
             //AddConstraint(Head, Chest);
             cone = AddConeTwist(Head, Chest);
             rot = Matrix4x4.Translate(Head.Pos()).Lookat(Head.Pos() + Vector3.up, Vector3.right).rotation;
             cone.Rotation = rot;
-            cone.TwistSpan = 30;
-            cone.SwingSpan1 = 30;
-            cone.SwingSpan2 = 8;
+            cone.TwistSpan = RagdollConstants.ConstraintLimits.HeadTwistSpan;
+            cone.SwingSpan1 = RagdollConstants.ConstraintLimits.HeadSwingSpan1;
+            cone.SwingSpan2 = RagdollConstants.ConstraintLimits.HeadSwingSpan2;
 
             //AddConstraint(LeftArm, Chest);
             cone = AddConeTwist(LeftArm, Chest);
             rot = Matrix4x4.Translate(LeftArm.Pos()).Lookat(LeftArm.Pos() + new Vector3(1.2f, -1, 0), Vector3.right).rotation;
             cone.Rotation = rot;
-            cone.TwistSpan = 25;
-            cone.SwingSpan1 = 90;
-            cone.SwingSpan2 = 50;
+            cone.TwistSpan = RagdollConstants.ConstraintLimits.ArmTwistSpan;
+            cone.SwingSpan1 = RagdollConstants.ConstraintLimits.ArmSwingSpan1;
+            cone.SwingSpan2 = RagdollConstants.ConstraintLimits.ArmSwingSpan2;
 
             //AddConstraint(LeftElbow, LeftArm);
             AddLeftElbowJoint();
@@ -346,9 +371,9 @@ namespace GanyuEditor.Physics
             cone = AddConeTwist(RightArm, Chest);
             rot = Matrix4x4.Translate(RightArm.Pos()).Lookat(RightArm.Pos() + new Vector3(-1.2f, -1, 0), Vector3.right).rotation;
             cone.Rotation = rot;
-            cone.TwistSpan = 25;
-            cone.SwingSpan1 = 90;
-            cone.SwingSpan2 = 50;
+            cone.TwistSpan = RagdollConstants.ConstraintLimits.ArmTwistSpan;
+            cone.SwingSpan1 = RagdollConstants.ConstraintLimits.ArmSwingSpan1;
+            cone.SwingSpan2 = RagdollConstants.ConstraintLimits.ArmSwingSpan2;
 
             //AddConstraint(RightElbow, RightArm);
             AddRightElbowJoint();
@@ -357,29 +382,29 @@ namespace GanyuEditor.Physics
             cone = AddConeTwist(LeftHip, Pelvis);
             rot = Matrix4x4.Translate(LeftHip.Pos()).Lookat(LeftKnee.Pos(), Vector3.right).rotation;
             cone.Rotation = rot;
-            cone.TwistSpan = 3;
-            cone.SwingSpan1 = 40;
-            cone.SwingSpan2 = 20;
+            cone.TwistSpan = RagdollConstants.ConstraintLimits.HipTwistSpan;
+            cone.SwingSpan1 = RagdollConstants.ConstraintLimits.HipSwingSpan1;
+            cone.SwingSpan2 = RagdollConstants.ConstraintLimits.HipSwingSpan2;
 
             //AddConstraint(RightHip, Pelvis);
             cone = AddConeTwist(RightHip, Pelvis);
             rot = Matrix4x4.Translate(RightHip.Pos()).Lookat(RightKnee.Pos(), Vector3.right).rotation;
             cone.Rotation = rot;
-            cone.TwistSpan = 3;
-            cone.SwingSpan1 = 40;
-            cone.SwingSpan2 = 20;
+            cone.TwistSpan = RagdollConstants.ConstraintLimits.HipTwistSpan;
+            cone.SwingSpan1 = RagdollConstants.ConstraintLimits.HipSwingSpan1;
+            cone.SwingSpan2 = RagdollConstants.ConstraintLimits.HipSwingSpan2;
 
             //AddConstraint(LeftKnee, LeftHip);
             var hinge = AddHinge(LeftKnee, LeftHip);
             rot = Matrix4x4.identity.Lookat(Vector3.right, Vector3.up).rotation;
             hinge.Rotation = rot;
-            hinge.High = 135;
+            hinge.High = RagdollConstants.ConstraintLimits.KneeHigh;
 
             //AddConstraint(RightKnee, RightHip);
             hinge = AddHinge(RightKnee, RightHip);
             rot = Matrix4x4.identity.Lookat(Vector3.right, Vector3.up).rotation;
             hinge.Rotation = rot;
-            hinge.High = 135;
+            hinge.High = RagdollConstants.ConstraintLimits.KneeHigh;
         }
         private void AddLeftElbowJoint()
         {
@@ -398,7 +423,7 @@ namespace GanyuEditor.Physics
             }
             var hinge = AddHinge(LeftElbow, LeftArm);
             hinge.Rotation = rot;
-            hinge.Low = -140;
+            hinge.Low = RagdollConstants.ConstraintLimits.ElbowLow;
         }
         private void AddRightElbowJoint()
         {
@@ -417,7 +442,7 @@ namespace GanyuEditor.Physics
             }
             var hinge = AddHinge(RightElbow, RightArm);
             hinge.Rotation = rot;
-            hinge.Low = -140;
+            hinge.Low = RagdollConstants.ConstraintLimits.ElbowLow;
         }
         private HingeConstraint AddHinge(StudioBone bone, StudioBone parent)
         {

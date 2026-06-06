@@ -1,4 +1,4 @@
-namespace GanyuEditor.Editor.Physics.Wizards
+namespace GanyuEditor
 {
     /// <summary>
     /// Constants for ragdoll body proportions and constraint limits
