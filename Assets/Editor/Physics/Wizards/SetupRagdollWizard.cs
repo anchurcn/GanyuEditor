@@ -96,11 +96,19 @@ namespace GanyuEditor.Editor.Physics.Wizards
         private SelectedConv _lastSelected = SelectedConv.DoNotUseConv;
         private List<BoneNameConvention> _boneNames = new List<BoneNameConvention>();
 
-        [MenuItem("GameObject/SetupRagdoll...", priority = 11)]
+        [MenuItem("GameObject/GoldsrcPhysics/SetupRagdoll...", priority = 11)]
         static void SetupRagdoll(MenuCommand menuCommand)
         {
             DisplayWizard<SetupRagdollWizard>("Setup ragdoll", "Setup", "SaveConvension");
         }
+
+        [MenuItem("GameObject/GoldsrcPhysics/SetupRagdoll...", true)]
+        static bool ValidateSetupRagdoll()
+        {
+            return Selection.activeGameObject != null &&
+                Selection.activeGameObject.GetComponent<ModelInfo>() != null;
+        }
+
         private void OnWizardCreate()
         {
             if (Validate())
@@ -127,7 +135,7 @@ namespace GanyuEditor.Editor.Physics.Wizards
 
             LoadConventions();
         }
-        
+
         private string _filePath = @"BoneNameConvensions.xml";
         private void LoadConventions()
         {

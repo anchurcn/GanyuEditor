@@ -26,46 +26,68 @@ namespace GanyuEditor.Physics
             }
             return null;
         }
-        [MenuItem("GameObject/AddHinge(Auto Parent)", false, 11)]
+        [MenuItem("GameObject/GoldsrcPhysics/AddHinge(Auto Parent)", false, 11)]
         static void AddHinge(MenuCommand menuCommand)
         {
-            var studioBoneObject = menuCommand.context as GameObject;
-            if (studioBoneObject != null && studioBoneObject.GetComponent<StudioBone>() != null)
+            var studioBoneObject = menuCommand.context as GameObject ?? Selection.activeGameObject;
+            if (studioBoneObject == null || studioBoneObject.GetComponent<StudioBone>() == null)
             {
-                var hinge = studioBoneObject.AddComponent<HingeConstraint>();
-                var rigidbody = studioBoneObject.GetComponent<GanyuEditor.Physics.PhysicsBody>();
-                hinge.ConnectedBody = FindParentRigidbody(rigidbody);
+                Debug.Log("Cannot add hinge: please right click a StudioBone object.");
+                return;
             }
+
+            var rigidbody = studioBoneObject.GetComponent<GanyuEditor.Physics.PhysicsBody>();
+            if (rigidbody == null)
+            {
+                Debug.Log("Cannot add hinge: selected StudioBone has no PhysicsBody.");
+                return;
+            }
+
+            var hinge = studioBoneObject.AddComponent<HingeConstraint>();
+            hinge.ConnectedBody = FindParentRigidbody(rigidbody);
         }
-        [MenuItem("GameObject/AddHinge(Auto Parent)", true, 11)]
-        static bool ValidateAddHinge(MenuCommand menuCommand)
+
+        [MenuItem("GameObject/GoldsrcPhysics/AddHinge(Auto Parent)", true)]
+        static bool ValidateAddHinge()
         {
-            var studioBoneObject = menuCommand.context as GameObject;
-            return studioBoneObject != null &&
-                studioBoneObject.GetComponent<StudioBone>() != null;
+            return Selection.activeGameObject != null &&
+                Selection.activeGameObject.GetComponent<StudioBone>() != null &&
+                Selection.activeGameObject.GetComponent<GanyuEditor.Physics.PhysicsBody>() != null;
         }
+
         #endregion
 
         #region Cone Auto Parenting
 
-        [MenuItem("GameObject/AddConeTwist(Auto Parent)", false, 11)]
+        [MenuItem("GameObject/GoldsrcPhysics/AddConeTwist(Auto Parent)", false, 11)]
         static void AddConeTwist(MenuCommand menuCommand)
         {
-            var studioBoneObject = menuCommand.context as GameObject;
-            if (studioBoneObject != null && studioBoneObject.GetComponent<StudioBone>() != null)
+            var studioBoneObject = menuCommand.context as GameObject ?? Selection.activeGameObject;
+            if (studioBoneObject == null || studioBoneObject.GetComponent<StudioBone>() == null)
             {
-                var hinge = studioBoneObject.AddComponent<ConeTwistConstraint>();
-                var rigidbody = studioBoneObject.GetComponent<GanyuEditor.Physics.PhysicsBody>();
-                hinge.ConnectedBody = FindParentRigidbody(rigidbody);
+                Debug.Log("Cannot add cone twist: please right click a StudioBone object.");
+                return;
             }
+
+            var rigidbody = studioBoneObject.GetComponent<GanyuEditor.Physics.PhysicsBody>();
+            if (rigidbody == null)
+            {
+                Debug.Log("Cannot add cone twist: selected StudioBone has no PhysicsBody.");
+                return;
+            }
+
+            var coneTwist = studioBoneObject.AddComponent<ConeTwistConstraint>();
+            coneTwist.ConnectedBody = FindParentRigidbody(rigidbody);
         }
-        [MenuItem("GameObject/AddAddConeTwist(Auto Parent)", true, 11)]
-        static bool ValidateAddConeTwist(MenuCommand menuCommand)
+
+        [MenuItem("GameObject/GoldsrcPhysics/AddConeTwist(Auto Parent)", true)]
+        static bool ValidateAddConeTwist()
         {
-            var studioBoneObject = menuCommand.context as GameObject;
-            return studioBoneObject != null &&
-                studioBoneObject.GetComponent<StudioBone>() != null;
+            return Selection.activeGameObject != null &&
+                Selection.activeGameObject.GetComponent<StudioBone>() != null &&
+                Selection.activeGameObject.GetComponent<GanyuEditor.Physics.PhysicsBody>() != null;
         }
+
         #endregion
         //[MenuItem("GameObject/GRigidBodyObjectWithConstraint", false, 11)]
         //static void CreateGRigidBodyObjectWithConstraint(MenuCommand menuCommand)

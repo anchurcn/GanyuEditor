@@ -57,3 +57,67 @@
 
 - IDE diagnostics 未发现新增问题。
 
+---
+
+## Hierarchy 菜单分组
+
+### 用户反馈
+
+- 希望统一把 Hierarchy 里的 Goldsrc 相关菜单放进一个 `GoldsrcPhysics` 菜单下。
+
+### 已调整
+
+- `GameObject/ExportRagdoll (same path)` 改为 `GameObject/GoldsrcPhysics/ExportRagdoll (same path)`。
+- `GameObject/LoadRagdoll (.gpd)...` 改为 `GameObject/GoldsrcPhysics/LoadRagdoll (.gpd)...`。
+- `GameObject/SetupRagdoll...` 改为 `GameObject/GoldsrcPhysics/SetupRagdoll...`。
+- `AddHinge(Auto Parent)` 与 `AddConeTwist(Auto Parent)` 改入 `GameObject/GoldsrcPhysics/` 子菜单。
+- 顺手修正 `AddConeTwist` 的 validation 菜单路径，使其与执行菜单路径一致。
+
+### 验证情况
+
+- IDE diagnostics 未发现新增问题。
+
+---
+
+## 子菜单条目被隐藏修复
+
+### 用户反馈
+
+- `GoldsrcPhysics` 子菜单里只剩 `LoadRagdoll`、`SetupRagdoll`、`ExportRagdoll`，缺少骨骼相关菜单。
+
+### 原因
+
+- `AddHinge(Auto Parent)` 与 `AddConeTwist(Auto Parent)` 保留了 validation 方法。
+- 当前右键的是 ModelRoot 而不是 `StudioBone` 时，validation 返回 false，Unity 会隐藏/禁用这些菜单项。
+
+### 已调整
+
+- 移除这两个菜单项的 validation 方法，使其在 `GoldsrcPhysics` 子菜单下始终可见。
+- 执行时再检查是否右键了 `StudioBone`，并检查是否有 `PhysicsBody`，不满足时输出日志后返回。
+
+### 验证情况
+
+- IDE diagnostics 未发现新增问题。
+
+---
+
+## 尝试恢复 Validation
+
+### 用户反馈
+
+- 希望尝试加回 Hierarchy 菜单 validation。
+
+### 已调整
+
+- 为 `AddHinge(Auto Parent)` / `AddConeTwist(Auto Parent)` 加回 validation。
+- validation 改为无参方法，使用 `Selection.activeGameObject` 判断，避免之前依赖 `MenuCommand` 的右键上下文校验。
+- 约束菜单仅在选中对象同时具有 `StudioBone` 与 `PhysicsBody` 时通过。
+- 为 `LoadRagdoll`、`ExportRagdoll`、`SetupRagdoll` 也增加 ModelRoot validation：选中对象需要包含 `ModelInfo`。
+
+### 验证情况
+
+- IDE diagnostics 未发现新增问题。
+
+
+
+

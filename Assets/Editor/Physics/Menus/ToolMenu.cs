@@ -20,7 +20,7 @@ namespace GanyuEditor.Physics
         /// But ignore the children if their parents are also selected.
         /// </remarks>
         /// <param name="menuCommand"></param>
-        [MenuItem("GameObject/ExportRagdoll (same path)", priority = 11)]
+        [MenuItem("GameObject/GoldsrcPhysics/ExportRagdoll (same path)", priority = 11)]
         static void ExportRagdoll(MenuCommand menuCommand)
         {
             if (menuCommand.context is GameObject modelRoot &&
@@ -43,7 +43,15 @@ namespace GanyuEditor.Physics
             }
         }
 
-        [MenuItem("GameObject/LoadRagdoll (.gpd)...", false, 10)]
+        [MenuItem("GameObject/GoldsrcPhysics/ExportRagdoll (same path)", true)]
+        static bool ValidateExportRagdoll()
+        {
+            return Selection.activeGameObject != null &&
+                Selection.activeGameObject.GetComponent<ModelInfo>() != null;
+        }
+
+
+        [MenuItem("GameObject/GoldsrcPhysics/LoadRagdoll (.gpd)...", false, 10)]
         static void LoadRagdoll(MenuCommand menuCommand)
         {
             var modelRoot = menuCommand.context as GameObject ?? Selection.activeGameObject;
@@ -68,6 +76,14 @@ namespace GanyuEditor.Physics
             Undo.RegisterFullObjectHierarchyUndo(modelRoot, "Load Ragdoll GPD");
             new PhysicsDataImporter().Import(modelRoot, inputPath);
         }
+
+        [MenuItem("GameObject/GoldsrcPhysics/LoadRagdoll (.gpd)...", true)]
+        static bool ValidateLoadRagdoll()
+        {
+            return Selection.activeGameObject != null &&
+                Selection.activeGameObject.GetComponent<ModelInfo>() != null;
+        }
+
 
         //[MenuItem("GameObject/ExportRagdoll...", priority = 11)]
         //static void ExportRagdollEx(MenuCommand menuCommand)
