@@ -69,3 +69,41 @@
 2. 如果 Assimp 不能读取，是否接受使用项目内已有 MDL 解析结果直接构建 Unity Mesh。
 3. Mesh 与骨骼是否存在坐标系、缩放、旋转差异。
 4. Mesh 预览是否只需要 Editor 模式可用。
+
+
+---
+
+## 2025-01-XX 实现记录
+
+### 已完成
+
+- 更新 `Packages/manifest.json`：
+  - 添加 `com.frozenstorminteractive.assimp` 依赖。
+  - 添加 `com.frozenstorminteractive.assimp.windows` 依赖。
+  - 将 scoped registry 调整为 `https://upm.frozenstorminteractive.com/`。
+- 新增 Assimp Mesh 预览运行时代码：
+  - `Assets/Scripts/ModelPreview/AssimpModelImportService.cs`
+  - `Assets/Scripts/ModelPreview/AssimpUnityMeshBuilder.cs`
+  - `Assets/Scripts/ModelPreview/MdlMeshPreviewRoot.cs`
+  - `Assets/Scripts/ModelPreview/MdlMeshPreviewController.cs`
+- 新增预览对象 Inspector：
+  - `Assets/Editor/ModelPreview/MdlMeshPreviewRootEditor.cs`
+- 接入现有 `.mdl` 导入流程：
+  - 在 `ImportStudioBoneWizard.Start()` 中，骨骼与当前空的 `CreateSkinedMesh()` 调用后执行 `MdlMeshPreviewController.Rebuild(ModelPath, ModelRoot.transform)`。
+- 实现预览行为：
+  - 清理旧 `AssimpMeshPreview`。
+  - Assimp 导入失败时只输出 Warning，不阻断骨骼导入。
+  - 遍历 `scene.Meshes` 创建 `MeshFilter + MeshRenderer`。
+  - 默认使用无贴图浅蓝灰材质。
+
+### 验证情况
+
+- 已运行 IDE diagnostics，未发现新增诊断。
+- `dotnet build Assembly-CSharp.csproj` 通过。
+- `dotnet build Assembly-CSharp-Editor.csproj` 当前未通过，原因是 Unity 生成的 csproj 尚未包含新建的 `Assets/Scripts/ModelPreview` 文件；需要 Unity 重新导入/刷新项目文件后再验证。
+
+### 注意事项
+
+1. Unity 打开项目后会通过 Package Manager 拉取 Assimp 包。
+2. 如果 Assimp 无法直接导入 GoldSrc `.mdl`，当前实现会保留骨骼导入，只记录 Assimp 失败日志。
+3. 当前坐标转换采用 GoldSrc 常见的 `x, z, y` 轴转换，并反转三角面绕序；如果 Mesh 与骨骼不对齐，需要继续调整转换规则或应用 Assimp Node Transform。

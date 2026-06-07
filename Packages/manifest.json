@@ -10,6 +10,8 @@
     "com.unity.test-framework": "1.1.33",
     "com.unity.timeline": "1.6.5",
     "com.unity.ugui": "1.0.0",
+    "com.frozenstorminteractive.assimp": "4.1.0",
+    "com.frozenstorminteractive.assimp.windows": "4.1.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -45,9 +47,9 @@
   "scopedRegistries": [
     {
       "name": "Assimp",
-      "url": "https://intelligide.pkgs.visualstudio.com/0435f2bc-ce0a-4490-ac97-883fb250890d/_packaging/stable/npm/registry/",
+      "url": "https://upm.frozenstorminteractive.com/",
       "scopes": [
-        "com.arsenstudio.assimp"
+        "com.frozenstorminteractive"
       ]
     }
   ]

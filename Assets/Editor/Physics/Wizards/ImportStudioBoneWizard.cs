@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
 using GanyuEditor.Extensions;
+using GanyuEditor.ModelPreview;
 using static GoldsrcPhysics.Goldsrc.Studio_h;
 
 
@@ -40,6 +41,7 @@ namespace GanyuEditor
 
                     CreateSkeleton3(pStudioModel);
                     CreateSkinedMesh();
+                    MdlMeshPreviewController.Rebuild(ModelPath, ModelRoot.transform);
                     Debug.Log($"Create skeleton for {ModelRoot.name} successfully.");
                 }
                 else
