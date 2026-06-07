@@ -5,8 +5,8 @@ using UnityEditor;
 using UnityEngine;
 using GanyuEditor.Extensions;
 using GanyuEditor.ModelPreview;
+using GanyuEditor.Physics;
 using static GoldsrcPhysics.Goldsrc.Studio_h;
-
 
 namespace GanyuEditor
 {
@@ -42,6 +42,7 @@ namespace GanyuEditor
                     CreateSkeleton3(pStudioModel);
                     CreateSkinedMesh();
                     MdlMeshPreviewController.Rebuild(ModelPath, ModelRoot.transform);
+                    PhysicsDataImporter.TryImportSameDirectory(ModelRoot);
                     Debug.Log($"Create skeleton for {ModelRoot.name} successfully.");
                 }
                 else

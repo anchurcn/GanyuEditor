@@ -42,6 +42,33 @@ namespace GanyuEditor.Physics
                 Debug.Log("Nothing export. Please select a model to export.");
             }
         }
+
+        [MenuItem("GameObject/LoadRagdoll (.gpd)...", false, 10)]
+        static void LoadRagdoll(MenuCommand menuCommand)
+        {
+            var modelRoot = menuCommand.context as GameObject ?? Selection.activeGameObject;
+            if (modelRoot == null || modelRoot.GetComponent<ModelInfo>() == null)
+            {
+                Debug.Log("Nothing import. Please right click a ModelRoot with ModelInfo component to import GPD.");
+                return;
+            }
+
+            var modelInfo = modelRoot.GetComponent<ModelInfo>();
+            var defaultDirectory = string.IsNullOrEmpty(modelInfo.OutputPath)
+                ? string.Empty
+                : Path.GetDirectoryName(modelInfo.OutputPath);
+            Debug.Log($"Open GPD file panel for ModelRoot={modelRoot.name}, defaultDirectory={defaultDirectory}");
+            var inputPath = EditorUtility.OpenFilePanel("Load Goldsrc Physics Data", defaultDirectory, "gpd");
+            if (string.IsNullOrEmpty(inputPath))
+            {
+                Debug.Log("GPD import canceled.");
+                return;
+            }
+
+            Undo.RegisterFullObjectHierarchyUndo(modelRoot, "Load Ragdoll GPD");
+            new PhysicsDataImporter().Import(modelRoot, inputPath);
+        }
+
         //[MenuItem("GameObject/ExportRagdoll...", priority = 11)]
         //static void ExportRagdollEx(MenuCommand menuCommand)
         //{
