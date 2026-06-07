@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GanyuEditor.Physics
 {
-    [RequireComponent(typeof(CollisionShape))]
+    [RequireComponent(typeof(CollisionShapeComponent))]
     [DisallowMultipleComponent]
     public class PhysicsBody : MonoBehaviour
     {

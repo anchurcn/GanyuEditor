@@ -5,7 +5,7 @@ using UnityEngine;
 namespace GanyuEditor.Physics
 {
     [RequireComponent(typeof(PhysicsBody))]
-    public abstract class PhysicsConstraint : MonoBehaviour
+    public abstract class PhysicsConstraintComponent : MonoBehaviour
     {
         // 约束共享骨骼的位置，但有自己的旋转。
         public Vector3 Position => transform.position;

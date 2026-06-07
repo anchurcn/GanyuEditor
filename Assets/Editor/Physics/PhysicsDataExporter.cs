@@ -85,7 +85,7 @@ namespace GanyuEditor.Physics
             _rigidbodyIndeces[boneIndex] = rigidIndex;
 
             // append shape
-            var subShapes = boneObject.GetComponents<CollisionShape>();
+            var subShapes = boneObject.GetComponents<CollisionShapeComponent>();
             var shapeElement = _doc.CreateElement("collision-shape");
             _shapeBlock.AppendChild(shapeElement);
 
@@ -124,7 +124,7 @@ namespace GanyuEditor.Physics
             // append constraint
             // rigidbody b is the connected body
             // sometimes body a connect to the world. (no body b)
-            var constCompo = boneObject.GetComponent<PhysicsConstraint>();
+            var constCompo = boneObject.GetComponent<PhysicsConstraintComponent>();
             if(constCompo)
             {
                 var constElement = _doc.CreateElement("constraint");
@@ -154,22 +154,22 @@ namespace GanyuEditor.Physics
                     constElement.AppendField("locala", locala);
                     constElement.AppendField("localb", localb);
 
-                    if (constCompo is SphericalConstraint)
+                    if (constCompo is SphericalConstraintComponent)
                     {
                         constElement.SetAttribute("type", "spherical");
                     }
-                    else if (constCompo is ConeTwistConstraint)
+                    else if (constCompo is ConeTwistConstraintComponent)
                     {
-                        var cone = constCompo as ConeTwistConstraint;
+                        var cone = constCompo as ConeTwistConstraintComponent;
                         constElement.SetAttribute("type", "cone");
 
                         constElement.AppendField("twistspan", cone.TwistSpan < 0 ? 0 : cone.TwistSpan);
                         constElement.AppendField("swingspan1", cone.SwingSpan1 < 0 ? 0 : cone.SwingSpan1);
                         constElement.AppendField("swingspan2", cone.SwingSpan2 < 0 ? 0 : cone.SwingSpan2);
                     }
-                    else if (constCompo is HingeConstraint)
+                    else if (constCompo is HingeConstraintComponent)
                     {
-                        var hinge = constCompo as HingeConstraint;
+                        var hinge = constCompo as HingeConstraintComponent;
                         constElement.SetAttribute("type", "hinge");
 
                         constElement.AppendField("low", hinge.Low);
@@ -183,19 +183,19 @@ namespace GanyuEditor.Physics
             }
         }
 
-        private XmlElement GetSubShapeElement(CollisionShape collisionShape)
+        private XmlElement GetSubShapeElement(CollisionShapeComponent collisionShape)
         {
             var result = _doc.CreateElement("sub-collision-shape");
 
-            if(collisionShape is BoxCollisionShape)
+            if(collisionShape is BoxCollisionShapeComponent)
             {
-                var box = collisionShape as BoxCollisionShape;
+                var box = collisionShape as BoxCollisionShapeComponent;
                 result.SetAttribute("type", "primitive.box");
                 result.AppendField("halfextent", new Vector3(box.HalfExtent.x, box.HalfExtent.z, box.HalfExtent.y));
             }
-            else if(collisionShape is CapsuleCollisionShape)
+            else if(collisionShape is CapsuleCollisionShapeComponent)
             {
-                var capsule = collisionShape as CapsuleCollisionShape;
+                var capsule = collisionShape as CapsuleCollisionShapeComponent;
                 result.SetAttribute("type", "primitive.capsule");
                 result.AppendField("radius", capsule.Radius);
                 result.AppendField("height", capsule.Height);

@@ -302,14 +302,14 @@ namespace GanyuEditor.Editor.Physics.Wizards
             Pelvis.AddShape(pelvisTrans, bodyWidth, (Spine.Pos() - Pelvis.Pos()).magnitude * RagdollConstants.PelvisHeightRatio);
             // spine
             var spineTrans = Matrix4x4.Translate((Chest.Pos() + Spine.Pos()) / 2);
-            var spineShape = Spine.gameObject.AddComponent<BoxCollisionShape>();
+            var spineShape = Spine.gameObject.AddComponent<BoxCollisionShapeComponent>();
             spineShape.WorldTransform = spineTrans;
             spineShape.HalfExtent = new Vector3(bodyWidth / 2, (Chest.Pos() - Spine.Pos()).magnitude / 2, headWidth * RagdollConstants.SpineDepthRatio);
             Spine.gameObject.AddComponent<GanyuEditor.Physics.PhysicsBody>();
             // chest
             Vector3 neckPos = (new Vector3(Head.Pos().x, LeftArm.Pos().y, Head.Pos().z) + headPos) / 2;
             var chestTrans = Matrix4x4.Translate((neckPos + Chest.Pos()) / 2);
-            var chestShape = Chest.gameObject.AddComponent<BoxCollisionShape>();
+            var chestShape = Chest.gameObject.AddComponent<BoxCollisionShapeComponent>();
             chestShape.WorldTransform = chestTrans;
             chestShape.HalfExtent = new Vector3(bodyWidth / 2, (neckPos - Chest.Pos()).magnitude / 2, headWidth * RagdollConstants.ChestDepthRatio);
             Chest.gameObject.AddComponent<GanyuEditor.Physics.PhysicsBody>();
@@ -428,21 +428,21 @@ namespace GanyuEditor.Editor.Physics.Wizards
             hinge.Rotation = rot;
             hinge.Low = RagdollConstants.ConstraintLimits.ElbowLow;
         }
-        private HingeConstraint AddHinge(StudioBone bone, StudioBone parent)
+        private HingeConstraintComponent AddHinge(StudioBone bone, StudioBone parent)
         {
-            HingeConstraint hinge = bone.gameObject.AddComponent<HingeConstraint>();
+            HingeConstraintComponent hinge = bone.gameObject.AddComponent<HingeConstraintComponent>();
             hinge.ConnectedBody = parent.GetComponent<GanyuEditor.Physics.PhysicsBody>();
             return hinge;
         }
-        private ConeTwistConstraint AddConeTwist(StudioBone bone, StudioBone parent)
+        private ConeTwistConstraintComponent AddConeTwist(StudioBone bone, StudioBone parent)
         {
-            ConeTwistConstraint cone = bone.gameObject.AddComponent<ConeTwistConstraint>();
+            ConeTwistConstraintComponent cone = bone.gameObject.AddComponent<ConeTwistConstraintComponent>();
             cone.ConnectedBody = parent.GetComponent<GanyuEditor.Physics.PhysicsBody>();
             return cone;
         }
         private void CreateLimb(StudioBone bone, Vector3 childPos, float radius)
         {
-            var shape = bone.gameObject.AddComponent<CapsuleCollisionShape>();
+            var shape = bone.gameObject.AddComponent<CapsuleCollisionShapeComponent>();
             bone.gameObject.AddComponent<GanyuEditor.Physics.PhysicsBody>();
 
             shape.Height = (bone.Pos() - childPos).magnitude;

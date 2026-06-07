@@ -6,7 +6,7 @@ using UnityEditor.IMGUI.Controls;
 namespace GanyuEditor.Physics
 {
     [AddComponentMenu("Goldsrc/AddHingeConstraint")]
-    [CustomEditor(typeof(HingeConstraint)), CanEditMultipleObjects]
+    [CustomEditor(typeof(HingeConstraintComponent)), CanEditMultipleObjects]
     public class HingeConstraintEditor : UnityEditor.Editor
     {
         // TODO: Y Limit 的 handle 起点应该为X轴，但Unity的实现为Z轴。可换成自己实现的 handle。
@@ -20,7 +20,7 @@ namespace GanyuEditor.Physics
 
         private void OnSceneGUI()
         {
-            var component = target as HingeConstraint;
+            var component = target as HingeConstraintComponent;
 
             //if (component.ShowLimitHandles || component.ShowRotationHandle)
             //{
@@ -48,7 +48,7 @@ namespace GanyuEditor.Physics
                     _handle.DrawHandle();
                     if (EditorGUI.EndChangeCheck())
                     {
-                        Undo.RecordObject(component, $"Edit {nameof(HingeConstraint)} [{component.name}] limits");
+                        Undo.RecordObject(component, $"Edit {nameof(HingeConstraintComponent)} [{component.name}] limits");
 
                         component.Low = -_handle.yMax;
                         component.High = -_handle.yMin;
@@ -62,7 +62,7 @@ namespace GanyuEditor.Physics
                 Quaternion rot = Handles.RotationHandle(component.Rotation, component.Position);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    Undo.RecordObject(component, $"Rotate {nameof(HingeConstraint)}");
+                    Undo.RecordObject(component, $"Rotate {nameof(HingeConstraintComponent)}");
                     component.Rotation = rot;
                 }
             }

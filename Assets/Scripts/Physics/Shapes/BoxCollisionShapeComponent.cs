@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GanyuEditor.Physics
 {
-    public class BoxCollisionShape : CollisionShape
+    public class BoxCollisionShapeComponent : CollisionShapeComponent
     {
         public Vector3 HalfExtent = Vector3.one;
 

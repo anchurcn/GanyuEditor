@@ -80,9 +80,9 @@ namespace GanyuEditor.Physics
 
         private void ClearExistingPhysics()
         {
-            var constraints = _modelRoot.GetComponentsInChildren<PhysicsConstraint>();
+            var constraints = _modelRoot.GetComponentsInChildren<PhysicsConstraintComponent>();
             var bodies = _modelRoot.GetComponentsInChildren<PhysicsBody>();
-            var shapes = _modelRoot.GetComponentsInChildren<CollisionShape>();
+            var shapes = _modelRoot.GetComponentsInChildren<CollisionShapeComponent>();
             Debug.Log($"Clear existing physics components before GPD import. Constraints={constraints.Length}, RigidBodies={bodies.Length}, Shapes={shapes.Length}");
             foreach (var c in constraints) UnityEngine.Object.DestroyImmediate(c);
             foreach (var b in bodies) UnityEngine.Object.DestroyImmediate(b);
@@ -138,7 +138,7 @@ namespace GanyuEditor.Physics
 
                 if (type == "primitive.box")
                 {
-                    var box = bone.gameObject.AddComponent<BoxCollisionShape>();
+                    var box = bone.gameObject.AddComponent<BoxCollisionShapeComponent>();
                     var half = VectorField(sub, "halfextent");
                     box.HalfExtent = new Vector3(half.x, half.z, half.y);
                     box.WorldTransform = shapeUnity;
@@ -146,7 +146,7 @@ namespace GanyuEditor.Physics
                 }
                 else if (type == "primitive.capsule")
                 {
-                    var capsule = bone.gameObject.AddComponent<CapsuleCollisionShape>();
+                    var capsule = bone.gameObject.AddComponent<CapsuleCollisionShapeComponent>();
                     capsule.Radius = FloatField(sub, "radius");
                     capsule.Height = FloatField(sub, "height");
                     capsule.WorldTransform = shapeUnity;
@@ -175,18 +175,18 @@ namespace GanyuEditor.Physics
                     throw new InvalidDataException($"Invalid constraint rigidbody index. rba={rba}, rbb={rbb}, rigidbodyCount={_rigidBodies.Count}.");
 
                 var go = _rigidBodies[rba].gameObject;
-                PhysicsConstraint c;
+                PhysicsConstraintComponent c;
                 switch (e.GetAttribute("type"))
                 {
-                    case "spherical": c = go.AddComponent<SphericalConstraint>(); break;
+                    case "spherical": c = go.AddComponent<SphericalConstraintComponent>(); break;
                     case "cone":
-                        var cone = go.AddComponent<ConeTwistConstraint>();
+                        var cone = go.AddComponent<ConeTwistConstraintComponent>();
                         cone.TwistSpan = FloatField(e, "twistspan");
                         cone.SwingSpan1 = FloatField(e, "swingspan1");
                         cone.SwingSpan2 = FloatField(e, "swingspan2");
                         c = cone; break;
                     case "hinge":
-                        var hinge = go.AddComponent<HingeConstraint>();
+                        var hinge = go.AddComponent<HingeConstraintComponent>();
                         hinge.Low = FloatField(e, "low");
                         hinge.High = FloatField(e, "high");
                         c = hinge; break;

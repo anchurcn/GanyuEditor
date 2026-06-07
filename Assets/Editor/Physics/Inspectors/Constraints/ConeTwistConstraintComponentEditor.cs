@@ -5,7 +5,7 @@ using UnityEditor.IMGUI.Controls;
 
 namespace GanyuEditor.Physics
 {
-    [CustomEditor(typeof(ConeTwistConstraint)), CanEditMultipleObjects]
+    [CustomEditor(typeof(ConeTwistConstraintComponent)), CanEditMultipleObjects]
     public class ConeTwistConstraintEditor : UnityEditor.Editor
     {
         private readonly JointAngularLimitHandle _handle = new JointAngularLimitHandle()
@@ -17,7 +17,7 @@ namespace GanyuEditor.Physics
 
         private void OnSceneGUI()
         {
-            var component = target as ConeTwistConstraint;
+            var component = target as ConeTwistConstraintComponent;
 
             //if (component.ShowLimitHandles || component.ShowRotationHandle)
             //{

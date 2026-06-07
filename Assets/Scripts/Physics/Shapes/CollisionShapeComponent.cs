@@ -6,7 +6,7 @@ using GanyuEditor.Extensions;
 namespace GanyuEditor.Physics
 {
     [ExecuteInEditMode]
-    public abstract class CollisionShape : MonoBehaviour
+    public abstract class CollisionShapeComponent : MonoBehaviour
     {
         // shape is local to rigidbody
         public Vector3 LocalCenter = Vector3.zero;

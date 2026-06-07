@@ -20,7 +20,7 @@ namespace GanyuEditor.Extensions
 
         public static void AddShape(this StudioBone self, Matrix4x4 shapeTrans, float height, float radius)
         {
-            var shape = self.gameObject.AddComponent<CapsuleCollisionShape>();
+            var shape = self.gameObject.AddComponent<CapsuleCollisionShapeComponent>();
             self.gameObject.AddComponent<PhysicsBody>();
             shape.WorldTransform = shapeTrans;
             shape.Height = height;

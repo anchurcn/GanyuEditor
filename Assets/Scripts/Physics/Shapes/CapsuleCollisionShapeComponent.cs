@@ -7,7 +7,7 @@ using static UnityEditor.IMGUI.Controls.CapsuleBoundsHandle;
 
 namespace GanyuEditor.Physics
 {
-    public class CapsuleCollisionShape : CollisionShape
+    public class CapsuleCollisionShapeComponent : CollisionShapeComponent
     {
         public float Radius = 1;
         public float Height = 2;

@@ -43,7 +43,7 @@ namespace GanyuEditor.Physics
                 return;
             }
 
-            var hinge = studioBoneObject.AddComponent<HingeConstraint>();
+            var hinge = studioBoneObject.AddComponent<HingeConstraintComponent>();
             hinge.ConnectedBody = FindParentRigidbody(rigidbody);
         }
 
@@ -76,7 +76,7 @@ namespace GanyuEditor.Physics
                 return;
             }
 
-            var coneTwist = studioBoneObject.AddComponent<ConeTwistConstraint>();
+            var coneTwist = studioBoneObject.AddComponent<ConeTwistConstraintComponent>();
             coneTwist.ConnectedBody = FindParentRigidbody(rigidbody);
         }
 

@@ -5,14 +5,14 @@ using UnityEditor.IMGUI.Controls;
 
 namespace GanyuEditor.Physics
 {
-    [CustomEditor(typeof(BoxCollisionShape)), CanEditMultipleObjects]
+    [CustomEditor(typeof(BoxCollisionShapeComponent)), CanEditMultipleObjects]
     public class BoxCollisionShapeEditor : UnityEditor.Editor
     {
         private BoxBoundsHandle _handle = new BoxBoundsHandle() { axes = PrimitiveBoundsHandle.Axes.All };
 
         private void OnSceneGUI()
         {
-            var component = target as BoxCollisionShape;
+            var component = target as BoxCollisionShapeComponent;
 
             //if (component.ShowBoundsHandle || component.ShowRotationHandle)
             //{
@@ -58,7 +58,7 @@ namespace GanyuEditor.Physics
 
         private void OnDisable()
         {
-            var component = target as CollisionShape;
+            var component = target as CollisionShapeComponent;
             component.ShowBoundsHandle = false;
             component.ShowRotationHandle = false;
         }
