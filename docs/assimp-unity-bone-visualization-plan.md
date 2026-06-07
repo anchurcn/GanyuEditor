@@ -12,7 +12,16 @@
 - 安装：https://intelligide.github.io/assimp-unity/installation/
 - 使用：https://intelligide.github.io/assimp-unity/usage/
 
-Assimp for Unity 基于 AssimpNet，主要使用方式：
+Assimp 采用用户本地构建的 AssimpNet UnityPlugin，而不是 UPM 版本。插件放置位置：
+
+```text
+Assets/Plugins/AssimpNet/
+├── AssimpNet.dll
+├── AssimpUnity.cs
+└── Native/
+```
+
+AssimpNet 主要使用方式：
 
 ```csharp
 using Assimp;

@@ -104,6 +104,55 @@
 
 ### 注意事项
 
-1. Unity 打开项目后会通过 Package Manager 拉取 Assimp 包。
+1. 该记录中的 UPM Assimp 方案已在后续切换为本地 AssimpNet UnityPlugin。
 2. 如果 Assimp 无法直接导入 GoldSrc `.mdl`，当前实现会保留骨骼导入，只记录 Assimp 失败日志。
 3. 当前坐标转换采用 GoldSrc 常见的 `x, z, y` 轴转换，并反转三角面绕序；如果 Mesh 与骨骼不对齐，需要继续调整转换规则或应用 Assimp Node Transform。
+
+
+---
+
+## 2025-01-XX 切换为本地 AssimpNet UnityPlugin
+
+### 用户反馈
+
+- UPM 版本 Assimp 存在 bug。
+- 用户已构建可用版本，路径为：`D:\F\_Goldsrc\Projects\assimpnet\AssimpNet\bin\Release\UnityPlugin`。
+
+### 已完成
+
+- 将本地构建产物复制到项目：
+  - `Assets/Plugins/AssimpNet/AssimpNet.dll`
+  - `Assets/Plugins/AssimpNet/AssimpUnity.cs`
+  - `Assets/Plugins/AssimpNet/Native/...`
+- 移除 `Packages/manifest.json` 中的 UPM Assimp 依赖。
+- 移除 `Packages/manifest.json` 中的 Assimp scoped registry。
+- 清理 `Packages/packages-lock.json` 中的 `com.frozenstorminteractive.assimp` 与 `com.frozenstorminteractive.assimp.windows` 锁定项。
+- 清理 `ProjectSettings/PackageManagerSettings.asset` 中的 Assimp registry 设置。
+
+### 说明
+
+- 现有 Mesh 预览代码仍使用 `using Assimp;` 与 `AssimpContext`，因此可以直接切换到本地 `AssimpNet.dll`。
+- `AssimpUnity.cs` 会在 Unity Editor 中设置 native dll probing path，加载 `Assets/Plugins/AssimpNet/Native/win/x86_64/assimp.dll`。
+- 后续验证重点是 Unity 打开后能否正确编译并加载本地 native `assimp.dll`。
+
+
+---
+
+## 2025-01-XX AssimpUnity 编译修复
+
+### 问题
+
+Unity 报错：
+
+```text
+Assets\Plugins\AssimpNet\AssimpUnity.cs(150,17): error CS8070: Control cannot fall out of switch from final case label ('case RuntimePlatform.WSAPlayerX64:')
+```
+
+### 修复
+
+- 为 `RuntimePlatform.WSAPlayerARM / WSAPlayerX86 / WSAPlayerX64` 分支补充 `break;`。
+- 顺手修复该分支中重复赋值 `native64LibPath = "";` 的笔误，将第二个改为 `native32LibPath = "";`。
+
+### 验证
+
+- 已运行 IDE diagnostics，`AssimpUnity.cs` 未发现新增诊断。
